@@ -16,7 +16,7 @@ const connectDB = () => {
     })
     .then(() => console.log('🚀 DataBase Connected'))
     .catch((reason) => {
-      console.log(`💩 Unable to connect to DataBase \n${reason}`);
+      console.log(`Unable to connect to DataBase \n${reason}`);
     });
 };
 
