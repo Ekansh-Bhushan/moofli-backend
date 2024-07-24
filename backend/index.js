@@ -52,7 +52,6 @@ app.use('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 app.use('/api', postRoute);
 app.use('/api', userRoute);
 app.use('/api', notificationRoute);

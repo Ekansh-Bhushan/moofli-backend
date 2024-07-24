@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const diaryController = require('../controllers/diaryController');
-const isAuthorised = require('../middleware/auth');
+const { isAuthorised } = require('../middleware/auth');
 
-
-router.post('/entries',  diaryController.createEntry);
- router.post('/:entryId/comments',  diaryController.addComment);
-router.put('/entries/:entryId/disable-comments',  diaryController.disableComments);
-router.delete('/entries/:entryId', diaryController.deleteEntry);
-router.put('/entries/:entryId/like',  diaryController.likeEntry);
-router.get('/entries',  diaryController.getEntries);
-router.get('/entries/:entryId', diaryController.getEntry);
-router.get('/entries/user/:userId', diaryController.getEntriesFromUser);
+// Apply isAuthorised middleware to routes that require authorization
+router.post('/entries', isAuthorised, diaryController.createEntry);
+router.post('/:entryId/comments', isAuthorised, diaryController.addComment);
+router.put('/entries/:entryId/disable-comments', isAuthorised, diaryController.disableComments);
+router.delete('/entries/:entryId', isAuthorised, diaryController.deleteEntry);
+router.put('/entries/:entryId/like', isAuthorised, diaryController.likeEntry);
+router.get('/entries', isAuthorised, diaryController.getEntries);
+router.get('/entries/:entryId', isAuthorised, diaryController.getEntry);
+router.get('/entries/user/:userId', isAuthorised, diaryController.getEntriesFromUser);
 
 module.exports = router;
