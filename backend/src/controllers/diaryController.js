@@ -11,6 +11,7 @@ exports.createEntry = async (req, res) => {
         const newEntryData = {
             content: req.body.content,
             user: req.user._id,
+            publicdairy:req.body.publicdairy,
         };
 
         const newEntry = new DiaryEntry(newEntryData);
