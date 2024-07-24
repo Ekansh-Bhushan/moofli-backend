@@ -1,5 +1,5 @@
 const DiaryEntry = require('../models/diary');
-const Comment = require('../models/comment');
+const Comment = require('../models/commentForDairy');
 const users = require('../models/user'); 
 // const isAuthorised = require('../middleware/auth');
 const Notification = require('../models/notification');
@@ -86,21 +86,21 @@ exports.addComment = async (req, res) => {
             });
         }
 
-        const notification = new Notification({
-            user: entryAuthor._id,
-            type: 'comment',
-            message: `${user.fname} ${user.lname} commented on your diary entry.`,
-            entry: entryId,
-        });
-        await notification.save();
+        // const notification = new Notification({
+        //     user: entryAuthor._id,
+        //     type: 'comment',
+        //     message: `${user.fname} ${user.lname} commented on your diary entry.`,
+        //     entry: entryId,
+        // });
+        // await notification.save();
 
-        // Emit notification
-        await notificationController.emitNotification(entryAuthor._id, notification.message);
+        // // Emit notification
+        // await notificationController.emitNotification(entryAuthor._id, notification.message);
 
-        res.status(201).send({
-            result: newComment,
-            message: "Comment added successfully",
-        });
+        // res.status(201).send({
+        //     result: newComment,
+        //     message: "Comment added successfully",
+        // });
     } catch (err) {
         res.status(500).send({
             result: false,
@@ -230,16 +230,16 @@ exports.likeEntry = async (req, res) => {
             await entry.save();
 
             // Create and emit notification for unlike
-            const notification = new Notification({
-                user: entry.user,
-                type: 'unlike',
-                message: `${user.fname} ${user.lname} unliked your diary entry.`,
-                entry: entryId,
-            });
-            await notification.save();
+            // const notification = new Notification({
+            //     user: entry.user,
+            //     type: 'unlike',
+            //     message: `${user.fname} ${user.lname} unliked your diary entry.`,
+            //     entry: entryId,
+            // });
+            // await notification.save();
 
-            // Emit notification
-            await notificationController.emitNotification(entry.user, notification.message);
+            // // Emit notification
+            // await notificationController.emitNotification(entry.user, notification.message);
 
             return res.status(200).send({
                 result: true,
@@ -256,16 +256,16 @@ exports.likeEntry = async (req, res) => {
         await user.save();
 
         // Create and emit notification for like
-        const notification = new Notification({
-            user: entry.user,
-            type: 'like',
-            message: `${user.fname} ${user.lname} liked your diary entry.`,
-            entry: entryId,
-        });
-        await notification.save();
+        // const notification = new Notification({
+        //     user: entry.user,
+        //     type: 'like',
+        //     message: `${user.fname} ${user.lname} liked your diary entry.`,
+        //     entry: entryId,
+        // });
+        // await notification.save();
 
-        // Emit notification
-        await notificationController.emitNotification(entry.user, notification.message);
+        // // Emit notification
+        // await notificationController.emitNotification(entry.user, notification.message);
 
         res.status(200).send({
             result: true,
