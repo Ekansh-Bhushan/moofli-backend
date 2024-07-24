@@ -43,14 +43,21 @@ exports.createEntry = async (req, res) => {
         });
     }
 };
-
-// Add a comment to a diary entry
 exports.addComment = async (req, res) => {
     try {
         const entryId = req.params.entryId;
-        const userId = req.user._id;
+        const userId = req.user._id; // Ensure `req.user` is correctly set by the `isAuthorised` middleware
         const content = req.body.content;
 
+        // Validate comment content
+        if (!content) {
+            return res.status(400).send({
+                result: false,
+                message: "Comment content is required",
+            });
+        }
+
+        // Find the diary entry
         const entry = await DiaryEntry.findById(entryId);
         if (!entry) {
             return res.status(404).send({
@@ -59,6 +66,7 @@ exports.addComment = async (req, res) => {
             });
         }
 
+        // Check if comments are disabled
         if (entry.deactivateComments) {
             return res.status(403).send({
                 result: false,
@@ -66,6 +74,7 @@ exports.addComment = async (req, res) => {
             });
         }
 
+        // Create a new comment
         const newComment = new Comment({
             user: userId,
             entry: entryId,
@@ -73,10 +82,11 @@ exports.addComment = async (req, res) => {
         });
         await newComment.save();
 
+        // Add the comment to the diary entry
         entry.comments.push(newComment._id);
         await entry.save();
 
-        // Create notification
+        // Create a notification
         const entryAuthor = await users.findById(entry.user);
         const user = await users.findById(userId);
         if (!entryAuthor || !user) {
@@ -86,29 +96,31 @@ exports.addComment = async (req, res) => {
             });
         }
 
-        // const notification = new Notification({
-        //     user: entryAuthor._id,
-        //     type: 'comment',
-        //     message: `${user.fname} ${user.lname} commented on your diary entry.`,
-        //     entry: entryId,
-        // });
-        // await notification.save();
+        const notification = new Notification({
+            user: entryAuthor._id,
+            type: 'comment',
+            message: `${user.fname} ${user.lname} commented on your diary entry.`,
+            entry: entryId,
+        });
+        await notification.save();
 
-        // // Emit notification
+        // Emit notification (assuming notificationController.emitNotification is correctly implemented)
         // await notificationController.emitNotification(entryAuthor._id, notification.message);
 
-        // res.status(201).send({
-        //     result: newComment,
-        //     message: "Comment added successfully",
-        // });
+        // Send success response
+        res.status(201).send({
+            result: newComment,
+            message: "Comment added successfully",
+        });
     } catch (err) {
+        console.error('Error adding comment:', err); // Log the error for debugging
         res.status(500).send({
             result: false,
             err: err.message,
+            message: "Internal server error",
         });
     }
 };
-
 
 // Disable comments on a diary entry
 exports.disableComments = async (req, res) => {
