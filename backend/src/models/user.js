@@ -244,6 +244,8 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
+    streak: { type: Number, default: 0 },
+    lastEntryDate: { type: Date, default: null },
 });
 
 // Reset password token generation

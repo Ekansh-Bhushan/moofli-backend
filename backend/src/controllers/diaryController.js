@@ -4,6 +4,7 @@ const users = require('../models/user');
 // const isAuthorised = require('../middleware/auth');
 const Notification = require('../models/notification');
 const notificationController = require('./userNotification');
+const { updateStreak } = require("./streakController");
 
 
 exports.createEntry = async (req, res) => {
@@ -30,6 +31,11 @@ exports.createEntry = async (req, res) => {
         }
         user.entries.push(newEntry._id);
         await user.save();
+
+        
+        // Update the user's streak
+        await updateStreak(req.user._id);
+
 
         res.status(201).send({
             result: newEntry,
