@@ -246,6 +246,12 @@ const UserSchema = new mongoose.Schema({
     },
     streak: { type: Number, default: 0 },
     lastEntryDate: { type: Date, default: null },
+    diaries: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "DiaryEntry",
+        },
+    ],
 });
 
 // Reset password token generation
