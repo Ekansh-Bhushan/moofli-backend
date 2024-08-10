@@ -3,6 +3,7 @@ const Notification = require("../models/notification");
 const NotificationType = require("../enums/notificationType");
 const { OAuth2Client } = require("google-auth-library");
 const generateUsername = require("../utils/generateUsername.utils");
+const jwt = require('jsonwebtoken');
 
 exports.registerUser = async (req, res) => {
     try {
@@ -106,6 +107,40 @@ exports.loginUser = async (req, res) => {
         res.status(500).send({
             result: false,
             err: err.message,
+        });
+    }
+};
+
+exports.tokenValidation = async (req, res) => {
+    try {
+        const token = req.header("x-auth-token");
+        if (!token) {
+            console.log("Token not provided");
+            return res.json(false);
+        }
+
+        let verified;
+        try {
+            verified = jwt.verify(token, process.env.JWT_KEY);
+            console.log("Decoded Token:", verified);
+        } catch (err) {
+            console.log("Token verification failed:", err.message);
+            return res.json(false);
+        }
+
+        const requiredUser = await User.findById(verified.id);
+        if (!requiredUser) {
+            console.log("User with ID", verified.id, "not found");
+            return res.json(false);
+        }
+
+        res.json(true);
+    } catch (error) {
+        console.error("Token validation error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Token validation failed",
+            cause: error.message || error,
         });
     }
 };

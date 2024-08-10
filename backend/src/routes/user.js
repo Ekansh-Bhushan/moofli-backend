@@ -2,6 +2,7 @@ const express = require("express");
 const {
     registerUser,
     loginUser,
+    tokenValidation,
     logout,
     changePassword,
     googleIdVerifyAndLogin,
@@ -50,6 +51,7 @@ const router = express.Router();
 
 router.route("/user/register").post(registerUser);
 router.route("/user/login").post(loginUser);
+router.route("/user-tokenIsValid").post(tokenValidation);
 router.route("/user/logout").get(logout);
 router.route("/user/follow/:userId").put(isAuthorised, followUnfollowUser);
 router.route("/user/changePassword").put(isAuthorised, changePassword);

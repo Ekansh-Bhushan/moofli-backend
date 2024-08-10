@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 const crypto = require("crypto");
 const { MENTOR_STATUS } = require("../enums/mentorStatus");
 const getHashTags = require("../utils/getHashTags");
@@ -304,10 +304,7 @@ UserSchema.methods.comparePassword = async function (password) {
 };
 
 // Generate Token
-UserSchema.methods.generateToken = async function () {
-    return await jwt.sign({ _id: this._id }, process.env.JWT_KEY, {
-        expiresIn: "7d",
-    });
+UserSchema.methods.generateToken = function() {
+    return jwt.sign({ id: this._id }, process.env.JWT_KEY, { expiresIn: '7d' });
 };
-
 module.exports = mongoose.model("users", UserSchema);
