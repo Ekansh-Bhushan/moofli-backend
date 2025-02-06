@@ -24,13 +24,31 @@ const updateStreak = async (userId) => {
     if (currentDate - lastEntryDate <= oneDay) {
         user.streak += 1;
     } else {
-        user.streak = 1; // Reset streak if not consecutive
+        user.streak = 0; // Reset streak if not consecutive
     }
 
     user.lastEntryDate = currentDate;
     await user.save();
 };
 
+const getStreak = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+
+        return user;
+    } catch (error) {
+        console.error("Error fetching streak:", error);  // Log the error to debug
+    }
+}
+
+
 module.exports = {
     updateStreak,
+    getStreak,
 };
+
+

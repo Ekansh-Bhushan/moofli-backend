@@ -30,6 +30,25 @@ const profileBackgroundPicStorage = multer.diskStorage({
     },
 });
 
+const dairyPicStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        // cb(null, "./uploads/public/users");
+        cb(null, path.join(__dirname, "public", "users"));
+    },
+    filename: function (req, file, cb) {
+        console.log(file);
+        cb(null, req.user._id.toString() + "-dairy_pic-"+path.extname(file.originalname));
+    },
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) {
+        cb(null, true);
+    } else {
+        cb(new Error("Only images are allowed"), false);
+    }
+};
+
 const postImagesStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         const pth = path.join(
@@ -118,6 +137,10 @@ const profileBackgroundPicUploader = multer({
     storage: profileBackgroundPicStorage,
 }).single("profileBackgroundPic");
 
+const dairyPicUploader = multer({
+    storage: dairyPicStorage,
+}).single("dairyPic");
+
 const postImagesUploader = multer({ storage: postImagesStorage }).array(
     "postImages",
     process.env.MAX_IMAGES_PER_POST
@@ -138,4 +161,5 @@ module.exports = {
     profileBackgroundPicUploader,
     paymentConformationPicUploader,
     introVideoUploader,
+    dairyPicUploader
 };

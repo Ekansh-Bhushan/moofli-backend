@@ -4,11 +4,12 @@ const Schema = mongoose.Schema;
 const DiaryEntrySchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'users', required: true },
   content: { type: String, required: true },
+  dairyPicUrl: { type: String, default: null }, 
   createdAt: { type: Date, default: Date.now },
   likes: [{ type: Schema.Types.ObjectId, ref: 'users' }],
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   deactivateComments: { type: Boolean, default: false },
-  publicdairy:{type:Boolean,required:true,default:false}
+  publicdairy: { type: Boolean, required: true, default: false }
 });
 
 module.exports = mongoose.model('DiaryEntry', DiaryEntrySchema);

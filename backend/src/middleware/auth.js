@@ -2,8 +2,11 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 exports.isAuthorised = async (req, res, next) => {
     try {
-        // const token = req.cookies.token;
-        const token = req.headers["authorization"];
+        let token = req.headers["authorization"];
+        if (token && token.startsWith("Bearer ")) {
+            token = token.split(" ")[1]; // Extract the actual token
+        }
+
 
         // console.log(token);
         if (!token) {
@@ -13,11 +16,10 @@ exports.isAuthorised = async (req, res, next) => {
             });
         }
         console.log('JWT Token (Middleware):', token);
-        // console.log(process.env.JWT_KEY);
         const decoded = jwt.verify(token, process.env.JWT_KEY);
-        // console.log(decoded, decoded._id)
-        const user = await User.findById(decoded._id);
-        //  console.log(user)
+        console.log("Decoded Token:", decoded);
+        const user = await User.findById(decoded.id);
+
 
         if (!user) {
             return res.status(404).send({
