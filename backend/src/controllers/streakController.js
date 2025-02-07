@@ -24,7 +24,7 @@ const updateStreak = async (userId) => {
     if (currentDate - lastEntryDate <= oneDay) {
         user.streak += 1;
     } else {
-        user.streak = 0; // Reset streak if not consecutive
+        user.streak = 1; // Reset streak if not consecutive
     }
 
     user.lastEntryDate = currentDate;
